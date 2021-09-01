@@ -8,17 +8,11 @@ def get_price(coffee):
 
 def check_ingredients(coffee):
     ingredients = menu[coffee]["ingredients"]
-    if ingredients["water"] > resources["water"]:
-        print("Sorry there is not enough water")
-        return False
-    elif ingredients["milk"] > resources["milk"]:
-        print("Sorry there is not enough milk")
-        return False
-    elif ingredients["coffee"] > resources["coffee"]:
-        print("Sorry there is not enough coffee")
-        return False
-    else:
-        return True
+    for ingredient in resources:
+        if resources[ingredient] < ingredients[ingredient]:
+            print(f"Sorry there is not enough {ingredient}.")
+            return False
+    return True
 
 
 def calculate_coins():
@@ -36,21 +30,25 @@ def calculate_change(coins, price):
 
 
 def new_resources(coffee_price, coffee_type):
+    global profit
     ingredients = menu[coffee_type]["ingredients"]
-    resources["water"] -= ingredients["water"]
-    resources["milk"] -= ingredients["milk"]
-    resources["coffee"] -= ingredients["coffee"]
-    resources["money"] += coffee_price
+    for ingredient in resources:
+        resources[ingredient] -= ingredients[ingredient]
+    profit += coffee_price
+
+
+def report():
+    print(f"Water: {resources['water']}ml")
+    print(f"Milk: {resources['milk']}ml")
+    print(f"Coffee: {resources['coffee']}g")
+    print(f"Money: ${profit}")
 
 
 def coffee_machine():
     global shut_down
     coffee_type = input("What would you like? (espresso/latte/cappuccino): ").lower()
     if coffee_type == 'report':
-        print(f"Water: {resources['water']}ml")
-        print(f"Milk: {resources['milk']}ml")
-        print(f"Coffee: {resources['coffee']}g")
-        print(f"Money: ${resources['money']}")
+        report()
         return
     elif coffee_type == 'off':
         shut_down = True
